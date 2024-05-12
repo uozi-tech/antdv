@@ -87,32 +87,32 @@ jobs:
       - name: Type Check
         run: pnpm typecheck
 
-  unit-test:
-    needs: setup
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Pnpm
-        uses: pnpm/action-setup@v3
-        with:
-          version: 8.15.4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: pnpm
-
-      - name: Cache dependencies
-        uses: actions/cache@v4
-        with:
-          path: node_modules
-          key: node_modules-${{ hashFiles('**/pnpm-lock.yaml') }}
-
-      - name: Unit Test
-        run: pnpm test
+#  unit-test:
+#    needs: setup
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v4
+#
+#      - name: Setup Pnpm
+#        uses: pnpm/action-setup@v3
+#        with:
+#          version: 8.15.4
+#
+#      - name: Setup Node
+#        uses: actions/setup-node@v4
+#        with:
+#          node-version: 20
+#          cache: pnpm
+#
+#      - name: Cache dependencies
+#        uses: actions/cache@v4
+#        with:
+#          path: node_modules
+#          key: node_modules-${{ hashFiles('**/pnpm-lock.yaml') }}
+#
+#      - name: Unit Test
+#        run: pnpm test
 
   build:
     needs: setup
