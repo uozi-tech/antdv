@@ -12,10 +12,12 @@ import {
   SliderProps,
   SwitchProps,
   TableColumnType,
+  TimePickerProps,
   TransferProps,
   UploadProps,
 } from 'ant-design-vue'
 import { cascaderProps } from 'ant-design-vue/es/cascader'
+import { MonthPickerProps, WeekPickerProps } from 'ant-design-vue/es/date-picker'
 
 export interface FTableColumn extends TableColumnType<any> {
   dataIndex: string | string[]
@@ -26,8 +28,11 @@ export interface FTableColumn extends TableColumnType<any> {
       | 'input'
       | 'input-number'
       | 'select'
-      | 'date-picker'
-      | 'time-picker'
+      | 'date'
+      | 'datetime'
+      | 'month'
+      | 'week'
+      | 'time'
       | 'number'
       | 'textarea'
       | 'radio'
@@ -42,16 +47,18 @@ export interface FTableColumn extends TableColumnType<any> {
       | ComponentInstance<any>
     input?: ExtractPublicPropTypes<InputProps>
     inputNumber?: ExtractPublicPropTypes<InputNumberProps>
-    select?: ExtractPublicPropTypes<SelectProps> & { valueKey: string }
+    select?: ExtractPublicPropTypes<SelectProps> & { valueKey?: string }
     cascader?: ExtractPublicPropTypes<typeof cascaderProps>
     colorPicker?: ExtractPublicPropTypes<ColorPickerProps>
     datePicker?: ExtractPublicPropTypes<DatePickerProps>
+    week?: ExtractPublicPropTypes<WeekPickerProps>
+    month?: ExtractPublicPropTypes<MonthPickerProps>
+    time?: ExtractPublicPropTypes<TimePickerProps>
     radio?: ExtractPublicPropTypes<RadioProps>
     checkbox?: ExtractPublicPropTypes<CheckboxProps>
     rate?: ExtractPublicPropTypes<RateProps>
     slider?: ExtractPublicPropTypes<SliderProps>
     switch?: ExtractPublicPropTypes<SwitchProps>
-    timePicker?: ExtractPublicPropTypes<TimePickerDefaultProps>
     transfer?: ExtractPublicPropTypes<TransferProps>
     upload?: ExtractPublicPropTypes<UploadProps>
 

@@ -39,41 +39,41 @@ const columns: FTableColumn[] = [
         options: [
           {
             value: 'guide',
-            name: 'Guide',
+            label: 'Guide',
             children: [
               {
                 value: 'disciplines',
-                name: 'Disciplines',
+                label: 'Disciplines',
                 children: [
                   {
                     value: 'consistency',
-                    name: 'Consistency',
+                    label: 'Consistency',
                   },
                   {
                     value: 'feedback',
-                    name: 'Feedback',
+                    label: 'Feedback',
                   },
                   {
                     value: 'efficiency',
-                    name: 'Efficiency',
+                    label: 'Efficiency',
                   },
                   {
                     value: 'controllability',
-                    name: 'Controllability',
+                    label: 'Controllability',
                   },
                 ],
               },
               {
                 value: 'navigation',
-                name: 'Navigation',
+                label: 'Navigation',
                 children: [
                   {
                     value: 'side nav',
-                    name: 'Side Navigation',
+                    label: 'Side Navigation',
                   },
                   {
                     value: 'top nav',
-                    name: 'Top Navigation',
+                    label: 'Top Navigation',
                   },
                 ],
               },
@@ -90,6 +90,60 @@ const columns: FTableColumn[] = [
     },
   },
   {
+    title: 'Name',
+    dataIndex: 'name',
+    search: true,
+    form: {
+      type: 'select',
+      select: {
+        options: [
+          {
+            value: 'guide',
+            label: 'Guide',
+            children: [
+              {
+                value: 'disciplines',
+                label: 'Disciplines',
+                children: [
+                  {
+                    value: 'consistency',
+                    label: 'Consistency',
+                  },
+                  {
+                    value: 'feedback',
+                    label: 'Feedback',
+                  },
+                  {
+                    value: 'efficiency',
+                    label: 'Efficiency',
+                  },
+                  {
+                    value: 'controllability',
+                    label: 'Controllability',
+                  },
+                ],
+              },
+              {
+                value: 'navigation',
+                label: 'Navigation',
+                children: [
+                  {
+                    value: 'side nav',
+                    label: 'Side Navigation',
+                  },
+                  {
+                    value: 'top nav',
+                    label: 'Top Navigation',
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    },
+  },
+  {
     title: 'Age',
     dataIndex: 'age',
     form: {
@@ -97,8 +151,101 @@ const columns: FTableColumn[] = [
     },
   },
   {
+    title: 'Checkbox',
+    dataIndex: 'switch',
+    form: {
+      type: 'checkbox',
+    },
+  },
+  {
+    title: 'Date',
+    dataIndex: 'date',
+    form: {
+      type: 'date',
+    },
+  },
+  {
+    title: 'Date Time',
+    dataIndex: 'datetime',
+    form: {
+      type: 'datetime',
+    },
+  },
+  {
+    title: 'Decade',
+    dataIndex: 'decade',
+    form: {
+      type: 'decade',
+    },
+  },
+  {
+    title: 'Year',
+    dataIndex: 'year',
+    form: {
+      type: 'year',
+    },
+  },
+  {
+    title: 'Month',
+    dataIndex: 'month',
+    form: {
+      type: 'month',
+    },
+  },
+  {
+    title: 'Week',
+    dataIndex: 'week',
+    form: {
+      type: 'week',
+    },
+  },
+  {
+    title: 'Time',
+    dataIndex: 'time',
+    form: {
+      type: 'time',
+    },
+  },
+  {
+    title: 'Switch',
+    dataIndex: 'switch',
+    form: {
+      type: 'switch',
+    },
+  },
+  {
+    title: 'Rate',
+    dataIndex: 'rate',
+    form: {
+      type: 'rate',
+    },
+  },
+  {
+    title: 'Slider',
+    dataIndex: 'slider',
+    form: {
+      type: 'slider',
+    },
+  },
+  {
+    title: 'FileList',
+    dataIndex: 'fileList',
+    form: {
+      type: 'upload',
+    },
+    customRender: ({ text }) => text.join(','),
+  },
+  {
+    title: 'File',
+    dataIndex: 'file',
+    form: {
+      type: 'upload',
+    },
+  },
+  {
     title: 'Action',
     dataIndex: 'action',
+    fixed: 'right',
     width: 240,
   },
 ]

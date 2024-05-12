@@ -1,30 +1,34 @@
 import {
-  Upload,
-  Transfer,
   TimePicker,
   Switch,
   Checkbox,
   Slider,
   Rate,
   Cascader,
-  Radio,
   DatePicker,
   Input,
   InputNumber,
   Select,
+  UploadDragger,
+  WeekPicker,
+  MonthPicker,
 } from 'ant-design-vue'
-import { JSX } from 'vue/jsx-runtime'
+import { InboxOutlined } from '@ant-design/icons-vue'
 import { FTableColumn, SelectOption } from './types'
-import { Ref, ref } from 'vue'
+import { inject, Ref, ref, watch } from 'vue'
 import { get, isArray, set } from 'lodash-es'
+import { FORMAT } from './constants'
+import { i18n } from './i18n'
 
 export default function getFormItem(
   api: Record<string, (params: Record<string, any>) => Promise<unknown>>,
   formData: Ref<Record<string, any>>,
   form: FTableColumn['form'],
   dataIndex: FTableColumn['dataIndex'],
-): JSX.Element | null {
+) {
+  const lang: string = inject('lang', 'en')
   const selectOptions = ref<SelectOption[]>([])
+
   function search(query: string, key: string | string[], valueKey?: string) {
     if (isArray(key)) {
       key = key.join('.')
@@ -36,39 +40,111 @@ export default function getFormItem(
   }
 
   const key = form?.formItem?.name ?? dataIndex
+  const value = ref(get(formData.value, key))
+
+  watch(value, (v) => {
+    set(formData.value, key, v)
+  })
+
   switch (form?.type) {
     case 'input':
-      return <Input value={get(formData.value, key)} onInput={(v: string | number) => set(formData.value, key, v)} {...form?.input} />
+      return <Input v-model:value={value.value} {...form?.input} />
     case 'input-number':
-      return <InputNumber value={get(formData.value, key)} {...form?.inputNumber} onChange={(v: number) => set(formData.value, key, v)} />
+      return <InputNumber v-model:value={value.value} {...form?.inputNumber} />
     case 'select':
       return (
         <Select
-          value={get(formData.value, key)}
+          v-model:value={value.value}
+          dropdownMatchSelectWidth={false}
           remote-method={(query: string) => search(query, dataIndex as string, form?.select?.valueKey)}
+          getPopupContainer={(triggerNode: any) => triggerNode.parentNode}
           {...form?.select}
         />
       )
     case 'cascader':
-      return <Cascader value={get(formData.value, key)} {...form?.cascader} />
+      return <Cascader v-model:value={value.value} getPopupContainer={(triggerNode: any) => triggerNode.parentNode} {...form?.cascader} />
     case 'checkbox':
-      return <Checkbox value={get(formData.value, key)} {...form?.checkbox} />
-    case 'radio':
-      return <Radio value={get(formData.value, key)} {...form?.radio} />
-    case 'date-picker':
-      return <DatePicker value={get(formData.value, key)} {...form?.datePicker} />
-    case 'time-picker':
-      return <TimePicker value={get(formData.value, key)} {...form?.timePicker} />
+      return <Checkbox v-model:checked={value.value} {...form?.checkbox} />
+    case 'date':
+      return (
+        <DatePicker
+          v-model:value={value.value}
+          valueFormat={FORMAT[form?.type]}
+          fotmat={FORMAT[form?.type]}
+          getPopupContainer={(triggerNode: any) => triggerNode.parentNode}
+          {...form?.datePicker}
+        />
+      )
+    case 'datetime':
+      return (
+        <DatePicker
+          v-model:value={value.value}
+          valueFormat={FORMAT[form?.type]}
+          mode="year"
+          getPopupContainer={(triggerNode: any) => triggerNode.parentNode}
+          showTime
+          {...form?.datePicker}
+        />
+      )
+    case 'month':
+      return (
+        <MonthPicker
+          v-model:value={value.value}
+          valueFormat={FORMAT[form?.type]}
+          fotmat={FORMAT[form?.type]}
+          getPopupContainer={(triggerNode: any) => triggerNode.parentNode}
+          {...form?.month}
+        />
+      )
+    case 'week':
+      return (
+        <WeekPicker
+          v-model:value={value.value}
+          mode={form?.type}
+          valueFormat={FORMAT[form?.type]}
+          fotmat={FORMAT[form?.type]}
+          getPopupContainer={(triggerNode: any) => triggerNode.parentNode}
+          {...form?.week}
+        />
+      )
+    case 'time':
+      return (
+        <TimePicker
+          value={value.value}
+          valueFormat={FORMAT[form?.type]}
+          fotmat={FORMAT[form?.type]}
+          getPopupContainer={(triggerNode: any) => triggerNode.parentNode}
+          {...form?.time}
+        />
+      )
     case 'switch':
-      return <Switch value={get(formData.value, key)} {...form?.switch} />
+      return <Switch v-model:checked={value.value} {...form?.switch} />
     case 'slider':
-      return <Slider value={get(formData.value, key)} {...form?.slider} />
+      return <Slider v-model:value={value.value} {...form?.slider} />
     case 'rate':
-      return <Rate value={get(formData.value, key)} {...form?.rate} />
-    case 'transfer':
-      return <Transfer value={get(formData.value, key)} {...form?.transfer} />
+      return <Rate v-model:value={value.value} {...form?.rate} />
     case 'upload':
-      return <Upload value={get(formData.value, key)} {...form?.upload} />
+      const fileUrls: string | string[] = value.value
+      let fileList
+      if (isArray(fileUrls)) {
+        fileList = fileUrls.map((item) => ({ uid: item, name: item, status: 'done', url: item }))
+      } else {
+        fileList = [
+          {
+            uid: fileUrls,
+            name: fileUrls,
+            url: fileUrls,
+          },
+        ]
+      }
+      return (
+        <UploadDragger fileList={fileList}>
+          <p class="ant-upload-drag-icon">
+            <InboxOutlined />
+          </p>
+          <p class="ant-upload-text"> {i18n[lang].upload} </p>
+        </UploadDragger>
+      )
 
     default:
       return null

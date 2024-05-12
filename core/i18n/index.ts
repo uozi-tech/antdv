@@ -10,6 +10,10 @@ export const i18n: Record<string, Record<string, string>> = {
     confirmDelete: '确认删除?',
     total: '总计',
     items: '条',
+    please: '请',
+    input: '输入',
+    select: '选择',
+    upload: '点击或拖拽到此区域上传',
   },
   en: {
     read: 'Detail',
@@ -22,5 +26,9 @@ export const i18n: Record<string, Record<string, string>> = {
     confirmDelete: 'Are you sure to delete this?',
     total: 'Total',
     items: 'Items',
+    please: 'Please',
+    input: 'input',
+    select: 'select',
+    upload: 'Click or drag file to this area to upload',
   },
 }

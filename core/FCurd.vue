@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // import { PaginationProps, TableProps } from 'ant-design-vue'
-import { type VNode, onMounted, watchEffect, computed, reactive } from 'vue'
+import { type VNode, onMounted, watchEffect, computed, reactive, provide } from 'vue'
 import { i18n } from './i18n'
 import { FCurdProps, FTableBodyScope, FTableHeaderScope } from './types'
 import FForm from './FForm.vue'
@@ -8,6 +8,8 @@ import { useConfigContextInject } from 'ant-design-vue/es/config-provider/contex
 import useCurd from './hook/useCurd'
 
 const { locale: lang } = useConfigContextInject().locale?.value ?? { locale: 'en' }
+
+provide('lang', lang)
 
 const props = defineProps<FCurdProps>()
 
@@ -49,7 +51,7 @@ function CustomRender(props: { node: VNode }) {
       <slot name="after-add" />
     </template>
     <f-form style="margin-bottom: 16px" :api="props.api" :data="searchFormData" :columns="searchColumns" layout="inline" isSearchForm />
-    <a-table :data-source="data" :columns="columns" :pagination="pagination as any">
+    <a-table :data-source="data" :columns="columns" :pagination="pagination as any" :scroll="{ x: 3000 }">
       <template #headerCell="{ title, column }: FTableHeaderScope">
         <template v-if="column?.customHeaderRender">
           <custom-render :node="column?.customHeaderRender({ title, column })" />
@@ -74,19 +76,3 @@ function CustomRender(props: { node: VNode }) {
     </a-modal>
   </a-card>
 </template>
-
-<style scoped>
-.wrapper {
-  display: flex;
-}
-
-.header {
-  display: flex;
-  justify-content: space-between;
-}
-
-.pagination {
-  display: flex;
-  justify-content: end;
-}
-</style>

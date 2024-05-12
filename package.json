@@ -29,6 +29,7 @@
     "release": "semantic-release"
   },
   "dependencies": {
+    "@ant-design/icons-vue": "^7.0.1",
     "@fcurd/request": "1.1.0",
     "ant-design-vue": "^4.2.1",
     "axios": "^1.6.8",
