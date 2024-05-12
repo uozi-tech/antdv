@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@fcurd/request':
-        specifier: 1.0.0
-        version: 1.0.0
+        specifier: 1.1.0
+        version: 1.1.0
       ant-design-vue:
         specifier: ^4.2.1
         version: 4.2.1(vue@3.4.27(typescript@5.4.5))
@@ -525,8 +525,8 @@ packages:
     resolution: {integrity: sha512-Ys+3g2TaW7gADOJzPt83SJtCDhMjndcDMFVQ/Tj9iA1BfJzFKD9mAUXT3OenpuPHbI6P/myECxRJrofUsDx/5g==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
 
-  '@fcurd/request@1.0.0':
-    resolution: {integrity: sha512-U4DH5FJJnF29NeN012HV7CP9PQJlQa6d5keIWjkPxKzfxzeF9DMNOQ/XoxbKF7Qa/Mu26qhniDjeR0G4696+TA==}
+  '@fcurd/request@1.1.0':
+    resolution: {integrity: sha512-fL0QVE67T2ymrE+qTi1oIDtyTHef+bFwBRVgfzpA3DhyElCkU22jmLOPe5VzXbG5fEPNSIi/tjgsx2Rdpvx0yQ==}
 
   '@humanwhocodes/config-array@0.11.14':
     resolution: {integrity: sha512-3T8LkOmg45BV5FICb15QQMsyUSWrQ8AygVfC7ZG32zOalnqrilm018ZVCw0eapXux8FtA33q8PSRSstjee3jSg==}
@@ -4250,7 +4250,7 @@ snapshots:
 
   '@eslint/js@8.57.0': {}
 
-  '@fcurd/request@1.0.0':
+  '@fcurd/request@1.1.0':
     dependencies:
       axios: 1.6.8
       lodash-es: 4.17.21

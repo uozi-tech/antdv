@@ -31,19 +31,16 @@
   },
   // 需要编译的文件或目录
   "include": [
-    "core/**/*",
+    "core",
     "example",
     "commitlint.config.ts",
-    "vite.config.ts"
+    "vite.config.ts",
+    "vite-env.d.ts"
   ],
   // 排除的文件或目录
   "exclude": [
     "node_modules",
     "dist",
-    "**/__tests__/**",
-    "example",
-    "commitlint.config.ts",
-    "vite.config.ts"
   ],
   "compileOnSave": false
 }
