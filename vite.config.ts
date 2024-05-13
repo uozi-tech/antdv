@@ -22,7 +22,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://127.0.0.1:4523/m2/3871056-3505026-default/171999476',
+        target: 'https://mock.apifox.com/m2/3871056-3505026-default/171999476',
         changeOrigin: true,
         secure: false,
         ws: true,

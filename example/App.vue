@@ -172,20 +172,6 @@ const columns: FTableColumn[] = [
     },
   },
   {
-    title: 'Decade',
-    dataIndex: 'decade',
-    form: {
-      type: 'decade',
-    },
-  },
-  {
-    title: 'Year',
-    dataIndex: 'year',
-    form: {
-      type: 'year',
-    },
-  },
-  {
     title: 'Month',
     dataIndex: 'month',
     form: {
