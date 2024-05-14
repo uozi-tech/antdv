@@ -1,11 +1,15 @@
-<script setup lang="ts">
-// import { PaginationProps, TableProps } from 'ant-design-vue'
-import { type VNode, onMounted, watchEffect, computed, reactive, provide } from 'vue'
+<script setup lang="tsx">
+import { onMounted, watchEffect, computed, reactive, provide, ref } from 'vue'
 import { i18n } from './i18n'
-import { FCurdProps, FTableBodyScope, FTableHeaderScope } from './types'
+import { FCurdProps, FTableBodyScope } from './types'
 import FForm from './FForm.vue'
 import { useConfigContextInject } from 'ant-design-vue/es/config-provider/context'
 import useCurd from './hook/useCurd'
+// import { get, isArray } from 'lodash-es'
+import Detail from './Detail.vue'
+import { buildTagMap } from './Render/TagRender'
+import { CustomRender } from './Render/CustomRender'
+import { TableColumnType } from 'ant-design-vue'
 
 const { locale: lang } = useConfigContextInject().locale?.value ?? { locale: 'en' }
 
@@ -27,16 +31,18 @@ const searchColumns = computed(() => {
 })
 
 const dataColumns = computed(() => {
-  return props.columns.filter((item) => item.dataIndex !== 'action' && item.key !== 'action')
+  return props.columns.filter((item) => item.dataIndex !== 'actions' && item.key !== 'actions' && item.form)
 })
 
 watchEffect(() => getList(searchFormData))
 
 onMounted(getList)
 
-function CustomRender(props: { node: VNode }) {
-  return props.node
-}
+// function CustomRender(props: { node: VNode }) {
+//   return props.node
+// }
+
+const tagMap = ref(buildTagMap(dataColumns.value))
 </script>
 
 <template>
@@ -50,29 +56,38 @@ function CustomRender(props: { node: VNode }) {
       <a-button v-if="!props.disableAdd" type="link" @click="handleAdd">{{ i18n[lang].add }}</a-button>
       <slot name="after-add" />
     </template>
-    <f-form style="margin-bottom: 16px" :api="props.api" :data="searchFormData" :columns="searchColumns" layout="inline" isSearchForm />
-    <a-table :data-source="data" :columns="columns" :pagination="pagination as any" :scroll="{ x: 3000 }">
-      <template #headerCell="{ title, column }: FTableHeaderScope">
-        <template v-if="column?.customHeaderRender">
-          <custom-render :node="column?.customHeaderRender({ title, column })" />
-        </template>
-      </template>
-      <template #bodyCell="{ record, column }: FTableBodyScope">
-        <template v-if="column?.dataIndex === 'action' && !column?.customRender">
-          <a-button size="small" type="link" v-bind="column?.btnProps" @click="handleRead()">
+    <f-form style="margin-bottom: 16px" :api="props.api" :data="searchFormData" :columns="searchColumns" layout="inline"
+      isSearchForm />
+    <a-table :data-source="data" :columns="columns as TableColumnType[]" :pagination="pagination" :scroll="{ x: 3000 }">
+      <!--      <template #headerCell="{ title, column }: FTableHeaderScope">-->
+      <!--        <template v-if="column?.customHeaderRender">-->
+      <!--          <custom-render :node="column?.customHeaderRender({ title, column })" />-->
+      <!--        </template>-->
+      <!--      </template>-->
+      <template #bodyCell="{ record, column, ...rest }: FTableBodyScope">
+        <template v-if="column?.dataIndex === 'actions' && !column?.customRender">
+          <a-button size="small" type="link" v-bind="column?.btnProps" @click="handleRead(record)">
             {{ i18n[lang].read }}
           </a-button>
-          <a-button size="small" type="link" v-bind="column?.btnProps" @click="handleEdit(record)" v-if="!props.disableEdit">
+          <a-button size="small" type="link" v-bind="column?.btnProps" @click="handleEdit(record)"
+            v-if="!props.disableEdit">
             {{ i18n[lang].edit }}
           </a-button>
           <a-popconfirm :title="i18n[lang].confirmDelete" v-if="!props.disableDelete">
             <a-button size="small" type="link" v-bind="column?.btnProps" danger> {{ i18n[lang].delete }} </a-button>
           </a-popconfirm>
         </template>
+        <template v-if="column?.tags">
+          <custom-render v-bind="{ record, column, renderIndex: rest.index, ...rest, tagMap }" />
+        </template>
       </template>
     </a-table>
-    <a-modal :width="props.modalWidth" :title="i18n[lang][mode]" v-model:open="formVisible" @ok="handleSave">
-      <f-form :data="formData" :api="props.api" :columns="dataColumns" />
+    <a-modal style="max-height: 80vh" :width="props.modalWidth" :title="i18n[lang][mode]" v-model:open="formVisible"
+      @ok="handleSave">
+      <div style="overflow-y: auto; max-height: 70vh">
+        <f-form v-if="mode !== 'read'" :data="formData" :api="props.api" :columns="dataColumns" />
+        <detail :tag-map="tagMap" :columns="props.columns" :record="formData" />
+      </div>
     </a-modal>
   </a-card>
 </template>

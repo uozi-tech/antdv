@@ -64,7 +64,12 @@ export interface FTableColumn extends TableColumnType<any> {
 
     formItem?: ExtractPublicPropTypes<FormItemProps> & { name?: string | string[] }
   }
-  [key: string]: any
+  tags?: (string | number)[] | Record<string | number, string>
+  customRender?: (data: CustomRenderOptions) => VNode | JSX.Element
+  hiddenInTable?: boolean
+  hiddenInEdit?: boolean
+  hiddenInAdd?: boolean
+  hiddenInDetail?: boolean
 }
 
 export interface SelectOption {
@@ -97,4 +102,13 @@ export type FTableBodyScope = {
   record: Record<string, any>
   index: number
   column: any
+}
+
+export type CustomRenderOptions = {
+  column: FTableColumn
+  record: Record<string, any>
+  text: any
+  value?: any
+  index?: number
+  renderIndex?: number
 }

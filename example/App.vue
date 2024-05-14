@@ -30,6 +30,31 @@ const columns: FTableColumn[] = [
     },
   },
   {
+    title: 'Type',
+    dataIndex: 'type',
+    tags: [1, 2, 3],
+    form: {
+      type: 'input',
+    },
+  },
+  {
+    title: 'Type',
+    dataIndex: 'type',
+    key: 'type2',
+    tags: [1, 2, 3],
+    form: {
+      type: 'input',
+    },
+    customRender({ value }) {
+      const map = {
+        1: 'success',
+        2: 'warning',
+        3: 'error',
+      }
+      return h('div', {}, map[value])
+    },
+  },
+  {
     title: 'Name',
     dataIndex: 'name',
     search: true,
@@ -219,7 +244,7 @@ const columns: FTableColumn[] = [
     form: {
       type: 'upload',
     },
-    customRender: ({ text }) => text.join(','),
+    customRender: (props) => props.text.join(','),
   },
   {
     title: 'File',
@@ -229,8 +254,8 @@ const columns: FTableColumn[] = [
     },
   },
   {
-    title: 'Action',
-    dataIndex: 'action',
+    title: 'Actions',
+    dataIndex: 'actions',
     fixed: 'right',
     width: 240,
   },

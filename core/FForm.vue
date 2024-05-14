@@ -56,6 +56,6 @@ function FormItemRender(p: { column: FTableColumn }) {
 
 <template>
   <Form :model="formData" label-width="auto" :labelAlign="labelAlign ?? 'left'" :layout="props.layout ?? 'vertical'">
-    <form-item-render v-for="c in props.columns" :key="c.prop" :column="c" />
+    <form-item-render v-for="c in props.columns" :key="c.dataIndex" :column="c" />
   </Form>
 </template>
