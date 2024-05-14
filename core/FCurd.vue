@@ -56,8 +56,7 @@ const tagMap = ref(buildTagMap(dataColumns.value))
       <a-button v-if="!props.disableAdd" type="link" @click="handleAdd">{{ i18n[lang].add }}</a-button>
       <slot name="after-add" />
     </template>
-    <f-form style="margin-bottom: 16px" :api="props.api" :data="searchFormData" :columns="searchColumns" layout="inline"
-      isSearchForm />
+    <f-form style="margin-bottom: 16px" :api="props.api" :data="searchFormData" :columns="searchColumns" layout="inline" isSearchForm />
     <a-table :data-source="data" :columns="columns as TableColumnType[]" :pagination="pagination" :scroll="{ x: 3000 }">
       <!--      <template #headerCell="{ title, column }: FTableHeaderScope">-->
       <!--        <template v-if="column?.customHeaderRender">-->
@@ -69,8 +68,7 @@ const tagMap = ref(buildTagMap(dataColumns.value))
           <a-button size="small" type="link" v-bind="column?.btnProps" @click="handleRead(record)">
             {{ i18n[lang].read }}
           </a-button>
-          <a-button size="small" type="link" v-bind="column?.btnProps" @click="handleEdit(record)"
-            v-if="!props.disableEdit">
+          <a-button size="small" type="link" v-bind="column?.btnProps" @click="handleEdit(record)" v-if="!props.disableEdit">
             {{ i18n[lang].edit }}
           </a-button>
           <a-popconfirm :title="i18n[lang].confirmDelete" v-if="!props.disableDelete">
@@ -82,8 +80,7 @@ const tagMap = ref(buildTagMap(dataColumns.value))
         </template>
       </template>
     </a-table>
-    <a-modal style="max-height: 80vh" :width="props.modalWidth" :title="i18n[lang][mode]" v-model:open="formVisible"
-      @ok="handleSave">
+    <a-modal style="max-height: 80vh" :width="props.modalWidth" :title="i18n[lang][mode]" v-model:open="formVisible" @ok="handleSave">
       <div style="overflow-y: auto; max-height: 70vh">
         <f-form v-if="mode !== 'read'" :data="formData" :api="props.api" :columns="dataColumns" />
         <detail :tag-map="tagMap" :columns="props.columns" :record="formData" />

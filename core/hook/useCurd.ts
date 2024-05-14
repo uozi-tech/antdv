@@ -27,7 +27,11 @@ export default function useCurd(props: FCurdProps, lang: string) {
     })
   }
 
-  function handleRead() {}
+  function handleRead(row: Record<string, any>) {
+    formVisible.value = true
+    mode.value = 'read'
+    formData.value = cloneDeep(row)
+  }
 
   function handleAdd() {
     formVisible.value = true
@@ -35,7 +39,7 @@ export default function useCurd(props: FCurdProps, lang: string) {
     formData.value = {}
   }
 
-  function handleEdit(row: any) {
+  function handleEdit(row: Record<string, any>) {
     formVisible.value = true
     mode.value = 'edit'
     formData.value = cloneDeep(row)
