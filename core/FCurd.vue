@@ -71,7 +71,12 @@ const tagMap = ref(buildTagMap(dataColumns.value))
       isSearchForm
     />
     <a-spin :spinning="loading">
-      <a-table :data-source="data" :columns="columns as TableColumnType[]" :pagination="pagination" :scroll="{ x: 3000, y: 240 }">
+      <a-table
+        :data-source="data"
+        :columns="columns as TableColumnType[]"
+        :pagination="pagination"
+        :scroll="{ x: props.scrollX, y: props.scrollY }"
+      >
         <template #headerCell="{ title, column }: FTableHeaderScope">
           <template v-if="column?.customHeaderRender">
             <custom-header-render :node="column?.customHeaderRender({ title, column })" />
