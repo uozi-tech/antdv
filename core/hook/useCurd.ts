@@ -8,6 +8,7 @@ export default function useCurd(props: FCurdProps, lang: string) {
   const formData = ref({})
   const formVisible = ref(false)
   const data = ref([])
+  const loading = ref(true)
 
   const pagination = reactive({
     current: 1,
@@ -20,11 +21,16 @@ export default function useCurd(props: FCurdProps, lang: string) {
   })
 
   function getList(params?: Record<string, any>) {
-    return props.api.getList({ page: pagination.current, pageSize: pagination?.pageSize ?? 10, ...params }).then((res: any) => {
-      data.value = res.data
-      const { total } = res.pagination
-      pagination.total = total
-    })
+    return props.api
+      .getList({ page: pagination.current, pageSize: pagination?.pageSize ?? 10, ...params })
+      .then((res: any) => {
+        data.value = res.data
+        const { total } = res.pagination
+        pagination.total = total
+      })
+      .finally(() => {
+        loading.value = false
+      })
   }
 
   function handleRead(row: Record<string, any>) {
@@ -59,6 +65,7 @@ export default function useCurd(props: FCurdProps, lang: string) {
   }
 
   return {
+    loading,
     mode,
     data,
     formData,

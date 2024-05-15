@@ -10,6 +10,7 @@ import {
   InputNumber,
   Select,
   UploadDragger,
+  RangePicker,
   WeekPicker,
   MonthPicker,
 } from 'ant-design-vue'
@@ -25,6 +26,7 @@ export default function getFormItem(
   formData: Ref<Record<string, any>>,
   form: FTableColumn['form'],
   dataIndex: FTableColumn['dataIndex'],
+  isSearchForm?: boolean,
 ) {
   const lang: string = inject('lang', 'en')
   const selectOptions = ref<SelectOption[]>([])
@@ -45,6 +47,10 @@ export default function getFormItem(
   watch(value, (v) => {
     set(formData.value, key, v)
   })
+
+  if (isSearchForm && ['date', 'datetime', 'week', 'month', 'time'].includes(form?.type)) {
+    return <RangePicker v-model:value={value.value} picker={form?.type} valueFormat={FORMAT[form?.type]} fotmat={FORMAT[form?.type]} />
+  }
 
   switch (form?.type) {
     case 'input':

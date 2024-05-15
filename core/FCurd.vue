@@ -1,5 +1,5 @@
 <script setup lang="tsx">
-import { onMounted, watchEffect, computed, reactive, provide, ref, VNode } from 'vue'
+import { watch, computed, provide, ref, type VNode } from 'vue'
 import { i18n } from './i18n'
 import { FCurdProps, FTableHeaderScope, FTableBodyScope } from './types'
 import FForm from './FForm.vue'
@@ -10,6 +10,8 @@ import Detail from './Detail.vue'
 import { buildTagMap } from './Render/TagRender'
 import { CustomRender } from './Render/CustomRender'
 import { TableColumnType } from 'ant-design-vue'
+import { debounce } from 'lodash-es'
+import useLocalStorage from './hook/useLocalStorage'
 
 const { locale: lang } = useConfigContextInject().locale?.value ?? { locale: 'en' }
 
@@ -17,31 +19,24 @@ provide('lang', lang)
 
 const props = defineProps<FCurdProps>()
 
-const { mode, data, formData, formVisible, pagination, getList, handleRead, handleAdd, handleEdit, handleSave } = useCurd(props, lang)
-
-const loading = ref(true)
-const searchFormData = reactive<Record<string, any>>({})
+const { loading, mode, data, formData, formVisible, pagination, getList, handleRead, handleAdd, handleEdit, handleSave } = useCurd(
+  props,
+  lang,
+)
 
 const searchColumns = computed(() => {
-  return props.columns.filter((item) => {
-    if (item.search) {
-      searchFormData[item.dataIndex as string] = undefined
-    }
-    return item.search
-  })
+  return props.columns.filter((item) => item.search)
 })
 
 const dataColumns = computed(() => {
   return props.columns.filter((item) => item.dataIndex !== 'actions' && item.key !== 'actions' && item.form)
 })
 
-watchEffect(() => {
-  getList(searchFormData).finally(() => (loading.value = false))
-})
+const searchFormData = useLocalStorage('params', {})
 
-onMounted(() => {
-  getList(searchFormData).finally(() => (loading.value = false))
-})
+const getData = debounce(() => getList(searchFormData.value), 200, { leading: false, trailing: true })
+
+watch(searchFormData.value, getData, { immediate: true })
 
 function CustomHeaderRender(props: { node: VNode }) {
   return props.node
@@ -54,18 +49,18 @@ const tagMap = ref(buildTagMap(dataColumns.value))
   <a-card>
     <template #title>
       {{ props.title ?? i18n[lang].list }}
-      <slot name="title-right" />
+      <slot name="titleRight" />
     </template>
     <template #extra>
-      <slot name="before-add" />
+      <slot name="beforeAdd" />
       <a-button v-if="!props.disableAdd" type="link" @click="handleAdd">{{ i18n[lang].add }}</a-button>
-      <slot name="after-add" />
+      <slot name="afterAdd" />
     </template>
     <f-form
-      v-if="!disableSearch"
+      v-if="!props.disableSearch"
       style="margin-bottom: 16px"
       :api="props.api"
-      :data="searchFormData"
+      v-model:data="searchFormData"
       :columns="searchColumns"
       layout="inline"
       isSearchForm
@@ -75,7 +70,7 @@ const tagMap = ref(buildTagMap(dataColumns.value))
         :data-source="data"
         :columns="columns as TableColumnType[]"
         :pagination="pagination"
-        :scroll="{ x: props.scrollX, y: props.scrollY }"
+        :scroll="{ x: props.scrollX ?? 2400, y: props.scrollY }"
       >
         <template #headerCell="{ title, column }: FTableHeaderScope">
           <template v-if="column?.customHeaderRender">
@@ -84,6 +79,7 @@ const tagMap = ref(buildTagMap(dataColumns.value))
         </template>
         <template #bodyCell="{ record, column, ...rest }: FTableBodyScope">
           <template v-if="column?.dataIndex === 'actions' && !column?.customRender">
+            <slot name="beforeActions" :record="record" :column="column" />
             <a-button size="small" type="link" v-bind="column?.btnProps" @click="handleRead(record)">
               {{ i18n[lang].read }}
             </a-button>
@@ -93,6 +89,7 @@ const tagMap = ref(buildTagMap(dataColumns.value))
             <a-popconfirm v-if="!props.disableDelete" :title="i18n[lang].confirmDelete">
               <a-button size="small" type="link" v-bind="column?.btnProps" danger> {{ i18n[lang].delete }} </a-button>
             </a-popconfirm>
+            <slot name="afterActions" :record="record" :column="column" />
           </template>
           <template v-if="column?.tags">
             <custom-render v-bind="{ record, column, renderIndex: rest.index, ...rest, tagMap }" />
@@ -102,7 +99,7 @@ const tagMap = ref(buildTagMap(dataColumns.value))
     </a-spin>
     <a-modal style="max-height: 80vh" :width="props.modalWidth" :title="i18n[lang][mode]" v-model:open="formVisible" @ok="handleSave">
       <div style="overflow-y: auto; max-height: 70vh">
-        <f-form v-if="mode !== 'read'" :data="formData" :api="props.api" :columns="dataColumns" />
+        <f-form v-if="mode !== 'read'" v-model:data="formData" :api="props.api" :columns="dataColumns" />
         <detail v-else :tag-map="tagMap" :columns="props.columns" :record="formData" />
       </div>
       <template #footer>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { h } from 'vue'
 import FCurd from '../core'
-import type { FTableColumn } from '../core/types'
+import { FTableColumn } from '../core/types'
 import { curd } from './curd'
 import { ConfigProvider } from 'ant-design-vue'
 import zhCN from 'ant-design-vue/es/locale/zh_CN'
@@ -188,6 +188,7 @@ const columns: FTableColumn[] = [
     form: {
       type: 'date',
     },
+    search: true,
   },
   {
     title: 'Date Time',
@@ -195,6 +196,7 @@ const columns: FTableColumn[] = [
     form: {
       type: 'datetime',
     },
+    search: true,
   },
   {
     title: 'Month',
@@ -202,6 +204,7 @@ const columns: FTableColumn[] = [
     form: {
       type: 'month',
     },
+    search: true,
   },
   {
     title: 'Week',
@@ -209,6 +212,7 @@ const columns: FTableColumn[] = [
     form: {
       type: 'week',
     },
+    search: true,
   },
   {
     title: 'Time',
@@ -216,6 +220,7 @@ const columns: FTableColumn[] = [
     form: {
       type: 'time',
     },
+    search: true,
   },
   {
     title: 'Switch',
@@ -264,7 +269,12 @@ const columns: FTableColumn[] = [
 
 <template>
   <ConfigProvider :locale="zhCN">
-    <FCurd :modal-width="1000" :api="curd as any" :columns="columns"></FCurd>
+    <FCurd :modal-width="1000" :api="curd as any" :columns="columns">
+      <template #beforeAdd>666</template>
+      <template #afterAdd>777</template>
+      <template #beforeActions>123</template>
+      <template #afterActions>456</template>
+    </FCurd>
   </ConfigProvider>
 </template>
 
