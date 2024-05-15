@@ -61,9 +61,17 @@ const tagMap = ref(buildTagMap(dataColumns.value))
       <a-button v-if="!props.disableAdd" type="link" @click="handleAdd">{{ i18n[lang].add }}</a-button>
       <slot name="after-add" />
     </template>
-    <f-form style="margin-bottom: 16px" :api="props.api" :data="searchFormData" :columns="searchColumns" layout="inline" isSearchForm />
+    <f-form
+      v-if="!disableSearch"
+      style="margin-bottom: 16px"
+      :api="props.api"
+      :data="searchFormData"
+      :columns="searchColumns"
+      layout="inline"
+      isSearchForm
+    />
     <a-spin :spinning="loading">
-      <a-table :data-source="data" :columns="columns as TableColumnType[]" :pagination="pagination" :scroll="{ x: 3000 }">
+      <a-table :data-source="data" :columns="columns as TableColumnType[]" :pagination="pagination" :scroll="{ x: 3000, y: 240 }">
         <template #headerCell="{ title, column }: FTableHeaderScope">
           <template v-if="column?.customHeaderRender">
             <custom-header-render :node="column?.customHeaderRender({ title, column })" />
@@ -74,10 +82,10 @@ const tagMap = ref(buildTagMap(dataColumns.value))
             <a-button size="small" type="link" v-bind="column?.btnProps" @click="handleRead(record)">
               {{ i18n[lang].read }}
             </a-button>
-            <a-button size="small" type="link" v-bind="column?.btnProps" @click="handleEdit(record)" v-if="!props.disableEdit">
+            <a-button v-if="!props.disableEdit" size="small" type="link" v-bind="column?.btnProps" @click="handleEdit(record)">
               {{ i18n[lang].edit }}
             </a-button>
-            <a-popconfirm :title="i18n[lang].confirmDelete" v-if="!props.disableDelete">
+            <a-popconfirm v-if="!props.disableDelete" :title="i18n[lang].confirmDelete">
               <a-button size="small" type="link" v-bind="column?.btnProps" danger> {{ i18n[lang].delete }} </a-button>
             </a-popconfirm>
           </template>

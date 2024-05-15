@@ -85,7 +85,10 @@ export type FCurdProps = {
   columns: FTableColumn[]
   tableConfig?: any
   paginationConfig?: any
+  scrollX?: number | string
+  scrollY?: number | string
   modalWidth?: string | number
+  disableSearch?: boolean
   disableAdd?: boolean
   disableEdit?: boolean
   disableDelete?: boolean
