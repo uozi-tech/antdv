@@ -14,6 +14,7 @@ declare module 'vue' {
     ADescriptionsItem: typeof import('ant-design-vue/es')['DescriptionsItem']
     AModal: typeof import('ant-design-vue/es')['Modal']
     APopconfirm: typeof import('ant-design-vue/es')['Popconfirm']
+    ASpin: typeof import('ant-design-vue/es')['Spin']
     ATable: typeof import('ant-design-vue/es')['Table']
   }
 }

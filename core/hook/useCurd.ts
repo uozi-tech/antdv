@@ -20,7 +20,7 @@ export default function useCurd(props: FCurdProps, lang: string) {
   })
 
   function getList(params?: Record<string, any>) {
-    props.api.getList({ page: pagination.current, pageSize: pagination?.pageSize ?? 10, ...params }).then((res: any) => {
+    return props.api.getList({ page: pagination.current, pageSize: pagination?.pageSize ?? 10, ...params }).then((res: any) => {
       data.value = res.data
       const { total } = res.pagination
       pagination.total = total
