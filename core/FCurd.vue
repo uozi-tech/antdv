@@ -43,11 +43,11 @@ const dataColumns = computed(() => {
 
 const tagMap = ref(buildTagMap(dataColumns.value))
 
-const getData = debounce(() => getList(searchFormData.value), 200, { leading: false, trailing: true })
+const getData = debounce(() => getList(searchFormData.value), 400, { leading: false, trailing: true })
 
 const searchFormData = useLocalStorage('params', {})
 
-watch(searchFormData.value, getData, { immediate: true })
+watch(searchFormData, getData, { immediate: true, deep: true })
 
 function onSelectedChange(keys: (string | number)[]) {
   selectedRowKeys.value = keys

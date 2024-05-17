@@ -8,6 +8,14 @@ import zhCN from 'ant-design-vue/es/locale/zh_CN'
 
 const columns: FTableColumn[] = [
   {
+    title: 'ID',
+    dataIndex: 'id',
+    search: true,
+    form: {
+      type: 'input',
+    },
+  },
+  {
     title: 'School ID',
     dataIndex: 'school_id',
     search: true,
