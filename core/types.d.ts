@@ -92,6 +92,8 @@ export type FCurdProps = {
   disableAdd?: boolean
   disableEdit?: boolean
   disableDelete?: boolean
+  rowKey?: string | ((record: Record<string, any>) => string)
+  rowSelectionType?: 'checkbox' | 'radio'
 }
 
 export type FTableHeaderScope = {

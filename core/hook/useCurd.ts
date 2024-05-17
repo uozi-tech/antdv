@@ -8,19 +8,27 @@ export default function useCurd(props: FCurdProps, lang: string) {
   const formData = ref({})
   const formVisible = ref(false)
   const data = ref([])
-  const loading = ref(true)
+  const tableLoading = ref(false)
+  const modalLoading = ref(false)
 
-  const pagination = reactive({
+  const pagination = reactive<any>({
     current: 1,
+    pageSize: 10,
     showSizeChanger: true,
     showQuickJumper: true,
     hideOnSinglePage: true,
+    responsive: true,
     showTotal: (total: number) => `${i18n[lang].total}: ${total} ${i18n[lang].items}`,
-    onChange: getList,
+    onChange: function (page: number, pageSize: number) {
+      this.current = page
+      this.pageSize = pageSize
+      getList({ page, pageSize })
+    },
     ...props.paginationConfig,
   })
 
-  function getList(params?: Record<string, any>) {
+  async function getList(params?: Record<string, any>) {
+    tableLoading.value = true
     return props.api
       .getList({ page: pagination.current, pageSize: pagination?.pageSize ?? 10, ...params })
       .then((res: any) => {
@@ -29,7 +37,7 @@ export default function useCurd(props: FCurdProps, lang: string) {
         pagination.total = total
       })
       .finally(() => {
-        loading.value = false
+        tableLoading.value = false
       })
   }
 
@@ -52,20 +60,20 @@ export default function useCurd(props: FCurdProps, lang: string) {
   }
 
   function handleSave() {
-    let saveFn = props.api.update
+    modalLoading.value = true
+    const operation = mode.value === 'add' ? 'create' : 'update'
 
-    if (mode.value === 'add') {
-      saveFn = props.api.create
-    }
-
-    saveFn(formData.value).then(() => {
-      getList()
-      formVisible.value = false
-    })
+    props.api[operation](formData.value)
+      .then(() => {
+        getList()
+        formVisible.value = false
+      })
+      .finally(() => (modalLoading.value = false))
   }
 
   return {
-    loading,
+    tableLoading,
+    modalLoading,
     mode,
     data,
     formData,

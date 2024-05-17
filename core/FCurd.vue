@@ -1,28 +1,37 @@
 <script setup lang="tsx">
 import { watch, computed, provide, ref, type VNode } from 'vue'
 import { i18n } from './i18n'
-import { FCurdProps, FTableHeaderScope, FTableBodyScope } from './types'
+import { FTableHeaderScope, FTableBodyScope, FCurdProps } from './types'
 import FForm from './FForm.vue'
 import { useConfigContextInject } from 'ant-design-vue/es/config-provider/context'
 import useCurd from './hook/useCurd'
-// import { get, isArray } from 'lodash-es'
 import Detail from './Detail.vue'
-import { buildTagMap } from './Render/TagRender'
-import { CustomRender } from './Render/CustomRender'
+import { buildTagMap } from './render/TagRender'
+import { CustomRender } from './render/CustomRender'
 import { TableColumnType } from 'ant-design-vue'
 import { debounce } from 'lodash-es'
 import useLocalStorage from './hook/useLocalStorage'
 
+const props = defineProps<FCurdProps>()
 const { locale: lang } = useConfigContextInject().locale?.value ?? { locale: 'en' }
 
 provide('lang', lang)
 
-const props = defineProps<FCurdProps>()
-
-const { loading, mode, data, formData, formVisible, pagination, getList, handleRead, handleAdd, handleEdit, handleSave } = useCurd(
-  props,
-  lang,
-)
+const {
+  tableLoading,
+  modalLoading,
+  mode,
+  data,
+  formData,
+  formVisible,
+  pagination,
+  getList,
+  handleRead,
+  handleAdd,
+  handleEdit,
+  handleSave,
+} = useCurd(props, lang)
+const selectedRowKeys = ref<(string | number)[]>([])
 
 const searchColumns = computed(() => {
   return props.columns.filter((item) => item.search)
@@ -32,17 +41,21 @@ const dataColumns = computed(() => {
   return props.columns.filter((item) => item.dataIndex !== 'actions' && item.key !== 'actions' && item.form)
 })
 
-const searchFormData = useLocalStorage('params', {})
+const tagMap = ref(buildTagMap(dataColumns.value))
 
 const getData = debounce(() => getList(searchFormData.value), 200, { leading: false, trailing: true })
 
+const searchFormData = useLocalStorage('params', {})
+
 watch(searchFormData.value, getData, { immediate: true })
+
+function onSelectedChange(keys: (string | number)[]) {
+  selectedRowKeys.value = keys
+}
 
 function CustomHeaderRender(props: { node: VNode }) {
   return props.node
 }
-
-const tagMap = ref(buildTagMap(dataColumns.value))
 </script>
 
 <template>
@@ -65,11 +78,17 @@ const tagMap = ref(buildTagMap(dataColumns.value))
       layout="inline"
       isSearchForm
     />
-    <a-spin :spinning="loading">
+    <a-spin :spinning="tableLoading">
       <a-table
+        :row-key="props.rowKey ?? 'id'"
+        :row-selection="{
+          selectedRowKeys,
+          onChange: onSelectedChange,
+          type: props.rowSelectionType ?? 'checkbox',
+        }"
         :data-source="data"
         :columns="columns as TableColumnType[]"
-        :pagination="pagination"
+        v-model:pagination="pagination"
         :scroll="{ x: props.scrollX ?? 2400, y: props.scrollY }"
       >
         <template #headerCell="{ title, column }: FTableHeaderScope">
@@ -97,14 +116,23 @@ const tagMap = ref(buildTagMap(dataColumns.value))
         </template>
       </a-table>
     </a-spin>
-    <a-modal style="max-height: 80vh" :width="props.modalWidth" :title="i18n[lang][mode]" v-model:open="formVisible" @ok="handleSave">
-      <div style="overflow-y: auto; max-height: 70vh">
-        <f-form v-if="mode !== 'read'" v-model:data="formData" :api="props.api" :columns="dataColumns" />
-        <detail v-else :tag-map="tagMap" :columns="props.columns" :record="formData" />
-      </div>
+    <a-modal
+      style="max-height: 80vh"
+      :closable="!modalLoading"
+      :width="props.modalWidth"
+      :title="i18n[lang][mode]"
+      v-model:open="formVisible"
+      @ok="handleSave"
+    >
+      <a-spin :spinning="modalLoading">
+        <div style="overflow-y: auto; max-height: 70vh">
+          <f-form v-if="mode !== 'read'" v-model:data="formData" :api="props.api" :columns="dataColumns" />
+          <detail v-else :tag-map="tagMap" :columns="props.columns" :record="formData" />
+        </div>
+      </a-spin>
       <template #footer>
-        <a-button @click="formVisible = false">{{ i18n[lang].close }}</a-button>
-        <a-button v-if="mode !== 'read'" type="primary" @click="handleSave">{{ i18n[lang].save }}</a-button>
+        <a-button :disabled="modalLoading" @click="formVisible = false">{{ i18n[lang].close }}</a-button>
+        <a-button v-if="mode !== 'read'" :loading="modalLoading" type="primary" @click="handleSave">{{ i18n[lang].save }}</a-button>
       </template>
     </a-modal>
   </a-card>
