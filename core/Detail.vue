@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { FTableColumn } from './types'
 import { get } from 'lodash-es'
-import { CustomRender } from './Render/CustomRender'
+import { CustomRender } from './render/CustomRender'
 
 const props = defineProps<{
   tagMap: Map<string, Map<string | number, string>>
