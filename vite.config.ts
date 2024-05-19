@@ -47,7 +47,8 @@ export default defineConfig({
   ],
   test: {
     clearMocks: true,
-    environment: 'jsdom',
+    environment: 'happy-dom',
+    setupFiles: [resolve(__dirname, 'core/__tests__/setup.ts')],
     reporters: ['default'],
     coverage: {
       reporter: ['text', 'json-summary', 'json'],

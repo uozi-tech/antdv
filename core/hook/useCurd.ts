@@ -36,6 +36,7 @@ export default function useCurd(props: FCurdProps, lang: string) {
         const { total } = res.pagination
         pagination.total = total
       })
+      .catch(() => {})
       .finally(() => {
         tableLoading.value = false
       })
