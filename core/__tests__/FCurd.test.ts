@@ -1,5 +1,5 @@
 import FCurd from '../FCurd.vue'
-import { curd } from '../../example/curd'
+import { curd } from './setup'
 import { columns } from './columns'
 import { expect, describe, it, expectTypeOf } from 'vitest'
 import { mount } from '@vue/test-utils'

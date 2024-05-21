@@ -1,5 +1,5 @@
 import { describe, expectTypeOf, it } from 'vitest'
-import { curd } from '../../example/curd'
+import { curd } from './setup'
 import { ref } from 'vue'
 import getFormItem from '../form_controls'
 import {
