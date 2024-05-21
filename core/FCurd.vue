@@ -37,11 +37,11 @@ const searchColumns = computed(() => {
   return props.columns.filter((item) => item.search)
 })
 
-const dataColumns = computed(() => {
+const formColumns = computed(() => {
   return props.columns.filter((item) => item.dataIndex !== 'actions' && item.key !== 'actions' && item.form)
 })
 
-const tagMap = ref(buildTagMap(dataColumns.value))
+const tagMap = ref(buildTagMap(formColumns.value))
 
 const getData = debounce(() => getList(searchFormData.value), 400, { leading: false, trailing: true })
 
@@ -126,7 +126,7 @@ function CustomHeaderRender(props: { node: VNode }) {
     >
       <a-spin :spinning="modalLoading">
         <div style="overflow-y: auto; max-height: 70vh">
-          <f-form v-if="mode !== 'read'" v-model:data="formData" :api="props.api" :columns="dataColumns" />
+          <f-form v-if="mode !== 'read'" v-model:data="formData" :api="props.api" :columns="formColumns" />
           <detail v-else :tag-map="tagMap" :columns="props.columns" :record="formData" />
         </div>
       </a-spin>

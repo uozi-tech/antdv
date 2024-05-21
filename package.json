@@ -30,7 +30,7 @@
   },
   "dependencies": {
     "@ant-design/icons-vue": "^7.0.1",
-    "@fcurd/request": "1.1.0",
+    "@fcurd/request": "1.2.0-beta.2",
     "ant-design-vue": "^4.2.1",
     "axios": "^1.6.8",
     "i": "^0.3.7",

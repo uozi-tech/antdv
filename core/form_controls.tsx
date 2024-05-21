@@ -16,19 +16,19 @@ import {
 } from 'ant-design-vue'
 import { InboxOutlined } from '@ant-design/icons-vue'
 import { FTableColumn, SelectOption } from './types'
-import { inject, Ref, ref, watch } from 'vue'
+import { Ref, ref, watch } from 'vue'
 import { get, isArray, set } from 'lodash-es'
 import { FORMAT } from './constants'
 import { i18n } from './i18n'
 
 export default function getFormItem(
-  api: Record<string, (params: Record<string, any>) => Promise<unknown>>,
+  api: any,
   formData: Ref<Record<string, any>>,
   form: FTableColumn['form'],
   dataIndex: FTableColumn['dataIndex'],
+  lang: 'en' | 'zh-CN',
   isSearchForm?: boolean,
 ) {
-  const lang: string = inject('lang', 'en')
   const selectOptions = ref<SelectOption[]>([])
 
   function search(query: string, key: string | string[], valueKey?: string) {

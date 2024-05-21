@@ -51,6 +51,8 @@ export default defineConfig({
     setupFiles: [resolve(__dirname, 'core/__tests__/setup.ts')],
     reporters: ['default'],
     coverage: {
+      include: ['core'],
+      exclude: ['core/**.cy.ts'],
       reporter: ['text', 'json-summary', 'json'],
     },
   },

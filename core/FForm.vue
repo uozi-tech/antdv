@@ -53,7 +53,7 @@ function FormItemRender(p: { column: FTableColumn }) {
       />
     )
   } else {
-    item = getFormItem(props.api, formData, form, dataIndex as string | string[], props.isSearchForm)
+    item = getFormItem(props.api, formData, form, dataIndex as string | string[], lang, props.isSearchForm)
   }
   return (
     <FormItem

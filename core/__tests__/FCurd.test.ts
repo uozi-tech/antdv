@@ -1,25 +1,22 @@
 import FCurd from '../FCurd.vue'
 import { curd } from '../../example/curd'
 import { columns } from './columns'
-import { expect, describe, it } from 'vitest'
+import { expect, describe, it, expectTypeOf } from 'vitest'
 import { mount } from '@vue/test-utils'
+import { FTableColumn } from '../types'
 
-// interface SetupState {
-//   data: any[]
-// }
-
-describe('<FCurd />', () => {
+describe('Test FCurd Render', () => {
   const wrapper = mount(FCurd, { props: { api: curd, columns: columns, scrollX: 2400 } })
   // const state = (wrapper.getCurrentComponent() as unknown as { setupState: SetupState }).setupState
 
-  it('card renders', () => {
+  it('should render card properly', () => {
     const title = wrapper.find('.ant-card-head-title').text()
     expect(title).toBe('List')
     const addButtonText = wrapper.find('.ant-card-extra').text()
     expect(addButtonText).toBe('Add')
   })
 
-  it('form renders', () => {
+  it('should render search form properly', () => {
     const labels = ['ID', 'School ID', 'Name', 'Name', 'Date', 'Date Time', 'Month', 'Week', 'Time']
     wrapper.findAll('ant-form-item-label > label').forEach((label, index) => {
       expect(label.text()).toBe(labels[index])
@@ -27,7 +24,7 @@ describe('<FCurd />', () => {
     expect(wrapper.find('form > button').text()).toBe('Reset')
   })
 
-  it('table renders', () => {
+  it('should render table properly', () => {
     const colsTitle = [
       '',
       'ID',
@@ -57,7 +54,10 @@ describe('<FCurd />', () => {
     })
   })
 
-  it('column renders', () => {})
+  it('should render custom header properly', () => {
+    const selector = '.ant-table-thead .ant-table-cell[colstart="5"] span[style="color: red;"]'
+    expect(wrapper.find(selector).text()).toBe('Name')
+  })
 
   // it('pagination renders', async () => {
   //   try {
@@ -70,4 +70,32 @@ describe('<FCurd />', () => {
   //     console.error(e)
   //   }
   // })
+})
+
+interface SetupState {
+  data: any[]
+  selectedRowKeys: (string | number)[]
+  lang: 'en' | 'zh-CN'
+  searchColumns: FTableColumn[]
+  formColumns: FTableColumn[]
+  tagMap: Map<string, Map<string | number, Record<string | number, string | number>>>
+}
+
+describe('Test FCurd Functions', () => {
+  const wrapper = mount(FCurd, { props: { api: curd, columns: columns, scrollX: 2400 } })
+  const state = (wrapper.getCurrentComponent() as unknown as { setupState: SetupState }).setupState
+
+  it('should initialize data properly', async () => {
+    expectTypeOf(state.data).toBeArray()
+    expectTypeOf(state.selectedRowKeys).toBeArray()
+    expect(state.lang).toBe('en')
+    expect(state.searchColumns.length).toBe(9)
+    expect(state.searchColumns).toEqual(columns.filter((item) => item.search))
+    expect(state.formColumns.length).toBe(18)
+
+    const typeMap = state.tagMap.get('type')
+    expect(typeMap?.get(1)).toBe('pink')
+    expect(typeMap?.get(2)).toBe('orange')
+    expect(typeMap?.get(3)).toBe('green')
+  })
 })

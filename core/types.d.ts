@@ -80,7 +80,7 @@ export interface SelectOption {
 
 export type FCurdProps = {
   title?: string
-  api: Record<string, (params: Record<string, any>) => Promise<unknown>>
+  api: any
   formLabelPosition?: 'left' | 'right' | 'top'
   columns: FTableColumn[]
   tableConfig?: any
