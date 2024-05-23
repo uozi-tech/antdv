@@ -5,19 +5,22 @@
   基于 <a href="https://github.com/vueComponent/ant-design-vue" target="_blank">ant-design-vue</a> 二次封装的CURD组件，旨在解决 antdv 开发中，表单、表格、分页等组件的复用问题，实现快速 CURD。
 
   <br>
+  <br>
 
 [![CI status][github-action-image]][github-action-url]
 [![NPM version][npm-version]][npm-url]
-[![minzip size][npm-bundle-size]][npm-url]
 [![Coverage Status][coverage]][codecov-url]
+[![license][license]][license-url]
 
 [github-action-image]: https://github.com/fcurd/antdv/workflows/Code%20Check/badge.svg
 [github-action-url]: https://github.com/fcurd/antdv/actions/workflows/code-check.yml
-[npm-version]: https://img.shields.io/npm/v/%40fcurd%2Fadntv
-[npm-bundle-size]: https://img.shields.io/bundlephobia/minzip/%40fcurd%2Fadntv
+[npm-version]: https://img.shields.io/npm/v/%40fcurd%2Fantdv
+[npm-bundle-size]: https://img.shields.io/bundlephobia/minzip/%40fcurd%2Fantdv
 [npm-url]: http://npmjs.org/package/@fcurd/antdv
 [coverage]: https://coveralls.io/repos/github/fcurd/antdv/badge.svg?branch=main
 [codecov-url]: https://coveralls.io/github/fcurd/antdv?branch=main
+[license]: https://img.shields.io/github/license/fcurd/antdv
+[license-url]: https://github.com/fcurd/antdv?tab=Apache-2.0-1-ov-file#readme
 </div>
 
 ## 安装
