@@ -1,13 +1,15 @@
 import FCurd from '../FCurd.vue'
 import { curd } from './setup'
 import { columns } from './columns'
-import { expect, describe, it, expectTypeOf } from 'vitest'
+import { expect, describe, it, expectTypeOf, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { FTableColumn } from '../types'
+import { getListResult } from './mock/getList'
 
 describe('Test FCurd Render', () => {
   const wrapper = mount(FCurd, { props: { api: curd, columns: columns, scrollX: 2400 } })
   // const state = (wrapper.getCurrentComponent() as unknown as { setupState: SetupState }).setupState
+  vi.spyOn(curd, 'getList').mockResolvedValue(getListResult)
 
   it('should render card properly', () => {
     const title = wrapper.find('.ant-card-head-title').text()
