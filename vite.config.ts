@@ -53,7 +53,7 @@ export default defineConfig({
     coverage: {
       include: ['core'],
       exclude: ['core/**.cy.ts'],
-      reporter: ['text', 'json-summary', 'json'],
+      reporter: ['lcov', 'text', 'json-summary', 'json'],
     },
   },
 })
