@@ -84,6 +84,7 @@ export type FCurdProps = {
   formLabelPosition?: 'left' | 'right' | 'top'
   columns: FTableColumn[]
   tableConfig?: any
+  fixParams?: Record<string, any>
   paginationConfig?: any
   scrollX?: number | string
   scrollY?: number | string

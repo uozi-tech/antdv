@@ -43,7 +43,7 @@ const formColumns = computed(() => {
 
 const tagMap = ref(buildTagMap(formColumns.value))
 
-const getData = debounce(() => getList(searchFormData.value), 400, { leading: false, trailing: true })
+const getData = debounce(() => getList({ ...searchFormData.value, ...props.fixParams }), 400, { leading: false, trailing: true })
 
 const searchFormData = useLocalStorage('params', {})
 

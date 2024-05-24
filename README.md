@@ -62,6 +62,7 @@ const curd = {
 
 ```ts
 const columns: FTableColumn[] = [{
+  tag: [0, 1], // 自动渲染tag， 比如 0，1分别表示男女性别，渲染两个不同颜色的tag，也可以传递对象自定义tag颜色 { 0: red, 1: blue }
   search: true, // 是否支持搜索，默认 false
   form: {
     // 配置表单组件
