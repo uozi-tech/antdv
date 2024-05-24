@@ -12,6 +12,7 @@ import {
   SliderProps,
   SwitchProps,
   TableColumnType,
+  TableProps,
   TimePickerProps,
   TransferProps,
   UploadProps,
@@ -78,23 +79,26 @@ export interface SelectOption {
   disabled?: boolean
 }
 
-export type FCurdProps = {
+export interface FTableProps extends TableProps {
+  columns: FTableColumn[]
+  rowKey?: string | ((record: Record<string, any>) => string)
+  rowSelectionType?: 'checkbox' | 'radio'
+  pagination?: any
+  scrollX?: number | string
+  scrollY?: number | string
+}
+
+export interface FCurdProps extends FTableProps {
   title?: string
   api: any
   formLabelPosition?: 'left' | 'right' | 'top'
-  columns: FTableColumn[]
-  tableConfig?: any
+  tableConfig?: TableProps
   fixParams?: Record<string, any>
-  paginationConfig?: any
-  scrollX?: number | string
-  scrollY?: number | string
   modalWidth?: string | number
   disableSearch?: boolean
   disableAdd?: boolean
   disableEdit?: boolean
   disableDelete?: boolean
-  rowKey?: string | ((record: Record<string, any>) => string)
-  rowSelectionType?: 'checkbox' | 'radio'
 }
 
 export type FTableHeaderScope = {

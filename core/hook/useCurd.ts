@@ -24,7 +24,7 @@ export default function useCurd(props: FCurdProps, lang: string) {
       this.pageSize = pageSize
       getList({ page, pageSize })
     },
-    ...props.paginationConfig,
+    ...props.pagination,
   })
 
   async function getList(params?: Record<string, any>) {
