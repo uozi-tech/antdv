@@ -35,7 +35,8 @@
     "axios": "^1.6.8",
     "i": "^0.3.7",
     "lodash-es": "^4.17.21",
-    "vue": "^3.4.21"
+    "vue": "^3.4.21",
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.2/xlsx-0.20.2.tgz"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.2.1",
