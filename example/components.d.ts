@@ -12,6 +12,7 @@ declare module 'vue' {
     ACard: typeof import('ant-design-vue/es')['Card']
     ADescriptions: typeof import('ant-design-vue/es')['Descriptions']
     ADescriptionsItem: typeof import('ant-design-vue/es')['DescriptionsItem']
+    AFlex: typeof import('ant-design-vue/es')['Flex']
     AModal: typeof import('ant-design-vue/es')['Modal']
     APopconfirm: typeof import('ant-design-vue/es')['Popconfirm']
     ASpin: typeof import('ant-design-vue/es')['Spin']

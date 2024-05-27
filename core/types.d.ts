@@ -121,4 +121,5 @@ export type CustomRenderOptions = {
   value?: any
   index?: number
   renderIndex?: number
+  export?: boolean
 }

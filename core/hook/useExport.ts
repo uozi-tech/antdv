@@ -1,22 +1,33 @@
 import { utils, writeFile } from 'xlsx'
+import { FTableColumn } from '../types'
+import { get, set } from 'lodash-es'
 
-export function useExport(api?: (params: Record<string, any>) => Promise<any>) {
-  const onExportExcel = (rows, selectRowKey) => {
+export function useExport(columns: FTableColumn[], api?: (params: Record<string, any>) => Promise<any>) {
+  const exportExcel = (selectedRowKey, selectedRows) => {
     if (api) {
-      api({ id: selectRowKey })?.then((res) => {
-        excel(res.data)
+      api({ id: selectedRowKey })?.then((res) => {
+        excel(columns, res.data)
       })
     } else {
-      excel(rows)
+      excel(columns, selectedRows)
     }
   }
 
   return {
-    onExportExcel,
+    exportExcel,
   }
 }
 
-function excel(data: Record<string, any>[]) {
+function excel(columns: FTableColumn[], data: Record<string, any>[]) {
+  columns.forEach((column) => {
+    data.forEach((item) => {
+      if (column.customRender) {
+        const text = get(item, column.dataIndex)
+        set(item, column.dataIndex, column.customRender({ text, record: item, column, export: true }))
+      }
+    })
+  })
+
   const worksheet = utils.json_to_sheet(data)
   const workbook = utils.book_new()
 

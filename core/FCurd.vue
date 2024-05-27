@@ -11,6 +11,7 @@ import { CustomRender } from './render/CustomRender'
 import { TableColumnType } from 'ant-design-vue'
 import { debounce } from 'lodash-es'
 import useLocalStorage from './hook/useLocalStorage'
+import { useExport } from './hook/useExport'
 
 const props = defineProps<FCurdProps>()
 const { locale: lang } = useConfigContextInject().locale?.value ?? { locale: 'en' }
@@ -32,6 +33,7 @@ const {
   handleSave,
 } = useCurd(props, lang)
 const selectedRowKeys = ref<(string | number)[]>([])
+const selectedRows = ref<Record<string | number, unknown>[]>([])
 
 const searchColumns = computed(() => {
   return props.columns.filter((item) => item.search)
@@ -45,17 +47,27 @@ const tagMap = ref(buildTagMap(formColumns.value))
 
 const getData = debounce(() => getList({ ...searchFormData.value, ...props.fixParams }), 400, { leading: false, trailing: true })
 
+/**
+ * Reference to search form
+ */
 const searchFormData = useLocalStorage('params', {})
 
 watch(searchFormData, getData, { immediate: true, deep: true })
 
-function onSelectedChange(keys: (string | number)[]) {
+function resetSearchForm() {
+  searchFormData.value = {}
+}
+
+function onSelectedChange(keys: (string | number)[], rows: Record<string | number, unknown>[]) {
   selectedRowKeys.value = keys
+  selectedRows.value = rows
 }
 
 function CustomHeaderRender(props: { node: VNode }) {
   return props.node
 }
+
+const { exportExcel } = useExport(props.columns)
 </script>
 
 <template>
@@ -77,7 +89,15 @@ function CustomHeaderRender(props: { node: VNode }) {
       :columns="searchColumns"
       layout="inline"
       isSearchForm
-    />
+    >
+      <template #default="{ formData }">
+        <a-flex wrap="wrap" gap="small">
+          <a-button @click="resetSearchForm">{{ i18n[lang].reset }}</a-button>
+          <a-button @click="() => exportExcel(selectedRowKeys, selectedRows)">{{ i18n[lang].export }}</a-button>
+          <slot name="searchFormAction" :form-data="formData" />
+        </a-flex>
+      </template>
+    </f-form>
     <a-spin :spinning="tableLoading">
       <a-table
         :row-key="props.rowKey ?? 'id'"
