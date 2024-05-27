@@ -17,10 +17,6 @@ const props = defineProps<{
 const formData = defineModel<Record<string, any>>('data', { required: true })
 const lang = inject('lang', 'en')
 
-function resetForm() {
-  formData.value = {}
-}
-
 function placeholderHelper(column: FTableColumn, form?: FTableColumn['form']) {
   const type = form?.type
   if (!form || form?.[type]?.placeholder) return
@@ -73,6 +69,6 @@ function FormItemRender(p: { column: FTableColumn }) {
 <template>
   <Form :model="formData" label-width="auto" :labelAlign="labelAlign ?? 'left'" :layout="props.layout ?? 'vertical'">
     <form-item-render v-for="c in props.columns" :key="c.dataIndex" :column="c" />
-    <a-button v-if="props.isSearchForm" @click="resetForm">{{ i18n[lang].reset }}</a-button>
+    <slot :form-data="formData" />
   </Form>
 </template>

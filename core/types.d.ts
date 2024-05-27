@@ -71,6 +71,7 @@ export interface FTableColumn extends TableColumnType<any> {
   hiddenInEdit?: boolean
   hiddenInAdd?: boolean
   hiddenInDetail?: boolean
+  hiddenInExport?: boolean
 }
 
 export interface SelectOption {
@@ -121,4 +122,5 @@ export type CustomRenderOptions = {
   value?: any
   index?: number
   renderIndex?: number
+  export?: boolean
 }

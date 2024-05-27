@@ -25,6 +25,7 @@ export const i18n: Record<string, Record<string, string>> = {
     exportCsv: '导出 Csv',
     exportPdf: '导出 Pdf',
     exportWord: '导出 Word',
+    checkAll: '选择全部',
   },
   en: {
     read: 'Detail',
@@ -52,5 +53,6 @@ export const i18n: Record<string, Record<string, string>> = {
     exportCsv: 'Export Csv',
     exportPdf: 'Export Pdf',
     exportWord: 'Export Word',
+    checkAll: 'Check All',
   },
 }
