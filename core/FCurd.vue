@@ -32,6 +32,7 @@ const {
   handleEdit,
   handleSave,
 } = useCurd(props, lang)
+const exportVisible = ref(false)
 const selectedRowKeys = ref<(string | number)[]>([])
 const selectedRows = ref<Record<string | number, unknown>[]>([])
 
@@ -154,6 +155,15 @@ const { exportExcel } = useExport(props.columns)
         <a-button :disabled="modalLoading" @click="formVisible = false">{{ i18n[lang].close }}</a-button>
         <a-button v-if="mode !== 'read'" :loading="modalLoading" type="primary" @click="handleSave">{{ i18n[lang].save }}</a-button>
       </template>
+    </a-modal>
+
+    <a-modal
+      style="max-height: 80vh"
+      :closable="!modalLoading"
+      :width="props.modalWidth"
+      :title="i18n[lang].export"
+      v-model:open="exportVisible"
+    >
     </a-modal>
   </a-card>
 </template>
