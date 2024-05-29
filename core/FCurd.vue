@@ -11,7 +11,8 @@ import { CustomRender } from './render/CustomRender'
 import { TableColumnType } from 'ant-design-vue'
 import { debounce } from 'lodash-es'
 import useLocalStorage from './hook/useLocalStorage'
-import { useExport } from './hook/useExport'
+// import { useExport } from './hook/useExport'
+import { VueDraggable } from 'vue-draggable-plus'
 
 const props = defineProps<FCurdProps>()
 const { locale: lang } = useConfigContextInject().locale?.value ?? { locale: 'en' }
@@ -67,8 +68,8 @@ function onSelectedChange(keys: (string | number)[], rows: Record<string | numbe
 function CustomHeaderRender(props: { node: VNode }) {
   return props.node
 }
-
-const { exportExcel } = useExport(props.columns)
+const sortData = ref()
+// const { exportExcel } = useExport(props.columns)
 </script>
 
 <template>
@@ -94,7 +95,7 @@ const { exportExcel } = useExport(props.columns)
       <template #default="{ formData }">
         <a-flex wrap="wrap" gap="small">
           <a-button @click="resetSearchForm">{{ i18n[lang].reset }}</a-button>
-          <a-button @click="() => exportExcel(selectedRowKeys, selectedRows)">{{ i18n[lang].export }}</a-button>
+          <a-button @click="exportVisible = true">{{ i18n[lang].export }}</a-button>
           <slot name="searchFormAction" :form-data="formData" />
         </a-flex>
       </template>
@@ -164,6 +165,11 @@ const { exportExcel } = useExport(props.columns)
       :title="i18n[lang].export"
       v-model:open="exportVisible"
     >
+      <VueDraggable v-model="sortData">
+        <div v-for="c in props.columns" :key="c.dataIndex as string">
+          {{ c.title }}
+        </div>
+      </VueDraggable>
     </a-modal>
   </a-card>
 </template>
