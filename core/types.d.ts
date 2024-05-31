@@ -71,6 +71,7 @@ export interface FTableColumn extends TableColumnType<any> {
   hiddenInEdit?: boolean
   hiddenInAdd?: boolean
   hiddenInDetail?: boolean
+  hiddenInExport?: boolean
 }
 
 export interface SelectOption {

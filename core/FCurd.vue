@@ -1,5 +1,5 @@
 <script setup lang="tsx">
-import { watch, computed, provide, ref, type VNode } from 'vue'
+import { watch, computed, provide, ref, type VNode, reactive } from 'vue'
 import { i18n } from './i18n'
 import { FTableHeaderScope, FTableBodyScope, FCurdProps } from './types'
 import FForm from './FForm.vue'
@@ -8,11 +8,12 @@ import useCurd from './hook/useCurd'
 import Detail from './Detail.vue'
 import { buildTagMap } from './render/TagRender'
 import { CustomRender } from './render/CustomRender'
-import { TableColumnType } from 'ant-design-vue'
+import { CheckboxOptionType, TableColumnType } from 'ant-design-vue'
 import { debounce } from 'lodash-es'
 import useLocalStorage from './hook/useLocalStorage'
 // import { useExport } from './hook/useExport'
 import { VueDraggable } from 'vue-draggable-plus'
+import { useExport } from './hook/useExport'
 
 const props = defineProps<FCurdProps>()
 const { locale: lang } = useConfigContextInject().locale?.value ?? { locale: 'en' }
@@ -45,6 +46,8 @@ const formColumns = computed(() => {
   return props.columns.filter((item) => item.dataIndex !== 'actions' && item.key !== 'actions' && item.form)
 })
 
+const exportColumns = props.columns.filter((item) => !item.hiddenInExport)
+
 const tagMap = ref(buildTagMap(formColumns.value))
 
 const getData = debounce(() => getList({ ...searchFormData.value, ...props.fixParams }), 400, { leading: false, trailing: true })
@@ -68,8 +71,29 @@ function onSelectedChange(keys: (string | number)[], rows: Record<string | numbe
 function CustomHeaderRender(props: { node: VNode }) {
   return props.node
 }
-const sortData = ref()
-// const { exportExcel } = useExport(props.columns)
+const { exportExcel } = useExport(exportColumns)
+
+const fieldOptions: CheckboxOptionType[] = props.columns.map<any>((item) => ({ label: item.title, value: item.dataIndex }))
+
+const state = reactive({
+  indeterminate: false,
+  checkAll: false,
+  checkedList: exportColumns.map(() => true),
+})
+
+const onCheckAllChange = (e: any) => {
+  Object.assign(state, {
+    checkedList: e.target.checked ? exportColumns.map(() => true) : [],
+    indeterminate: true,
+  })
+}
+watch(
+  () => state.checkedList,
+  (val) => {
+    state.indeterminate = !!val.length && val.length < fieldOptions.length
+    state.checkAll = val.length === fieldOptions.length
+  },
+)
 </script>
 
 <template>
@@ -95,7 +119,7 @@ const sortData = ref()
       <template #default="{ formData }">
         <a-flex wrap="wrap" gap="small">
           <a-button @click="resetSearchForm">{{ i18n[lang].reset }}</a-button>
-          <a-button @click="exportVisible = true">{{ i18n[lang].export }}</a-button>
+          <a-button :disabled="selectedRowKeys.length === 0" @click="exportVisible = true">{{ i18n[lang].export }}</a-button>
           <slot name="searchFormAction" :form-data="formData" />
         </a-flex>
       </template>
@@ -163,13 +187,43 @@ const sortData = ref()
       :closable="!modalLoading"
       :width="props.modalWidth"
       :title="i18n[lang].export"
+      :ok-text="i18n[lang].export"
       v-model:open="exportVisible"
+      @ok="exportExcel(selectedRowKeys, selectedRows)"
     >
-      <VueDraggable v-model="sortData">
-        <div v-for="c in props.columns" :key="c.dataIndex as string">
+      <a-checkbox v-model:checked="state.checkAll" :indeterminate="state.indeterminate" @change="onCheckAllChange">
+        {{ i18n[lang].checkAll }}
+      </a-checkbox>
+      <a-divider />
+      <VueDraggable class="checkbox__wrapper" v-model="exportColumns" :animation="200">
+        <a-checkbox
+          v-for="(c, i) in exportColumns"
+          :key="c.dataIndex as string"
+          class="checkbox"
+          :checked="state.checkedList[i]"
+          @change="(event) => (state.checkedList[i] = event.target.value)"
+        >
           {{ c.title }}
-        </div>
+        </a-checkbox>
+        <!--        <a-checkbox-group class="export-checkbox" v-model:value="state.checkedList" :options="fieldOptions" />-->
       </VueDraggable>
     </a-modal>
   </a-card>
 </template>
+
+<style scoped>
+.checkbox__wrapper {
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  max-height: 60vh;
+}
+.checkbox {
+  margin: 8px 0;
+  padding: 12px 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: move;
+}
+</style>
