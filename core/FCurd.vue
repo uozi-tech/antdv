@@ -1,17 +1,15 @@
 <script setup lang="tsx">
-import { watch, computed, provide, ref, type VNode, reactive } from 'vue'
+import { watch, computed, provide, ref, type VNode, reactive, Ref } from 'vue'
 import { i18n } from './i18n'
-import { FTableHeaderScope, FTableBodyScope, FCurdProps } from './types'
+import { FTableHeaderScope, FTableBodyScope, FCurdProps, ExportColumn } from './types'
 import FForm from './FForm.vue'
 import { useConfigContextInject } from 'ant-design-vue/es/config-provider/context'
 import useCurd from './hook/useCurd'
 import Detail from './Detail.vue'
 import { buildTagMap } from './render/TagRender'
 import { CustomRender } from './render/CustomRender'
-import { CheckboxOptionType, TableColumnType } from 'ant-design-vue'
 import { debounce } from 'lodash-es'
 import useLocalStorage from './hook/useLocalStorage'
-// import { useExport } from './hook/useExport'
 import { VueDraggable } from 'vue-draggable-plus'
 import { useExport } from './hook/useExport'
 
@@ -46,7 +44,16 @@ const formColumns = computed(() => {
   return props.columns.filter((item) => item.dataIndex !== 'actions' && item.key !== 'actions' && item.form)
 })
 
-const exportColumns = props.columns.filter((item) => !item.hiddenInExport)
+const exportColumns = ref(
+  props.columns
+    .filter((item) => !item.hiddenInExport)
+    .map((item) => {
+      if (typeof item.title === 'function') item.title = item.title()
+      if (Array.isArray(item.dataIndex)) item.dataIndex = item.dataIndex.join('.')
+      item.checked = true
+      return item
+    }),
+) as Ref<ExportColumn[]>
 
 const tagMap = ref(buildTagMap(formColumns.value))
 
@@ -73,26 +80,26 @@ function CustomHeaderRender(props: { node: VNode }) {
 }
 const { exportExcel } = useExport(exportColumns)
 
-const fieldOptions: CheckboxOptionType[] = props.columns.map<any>((item) => ({ label: item.title, value: item.dataIndex }))
-
 const state = reactive({
   indeterminate: false,
-  checkAll: false,
-  checkedList: exportColumns.map(() => true),
+  checkAll: true,
 })
 
-const onCheckAllChange = (e: any) => {
-  Object.assign(state, {
-    checkedList: e.target.checked ? exportColumns.map(() => true) : [],
-    indeterminate: true,
+const onCheckAllChange = () => {
+  state.indeterminate = false
+  exportColumns.value = exportColumns.value.map((item) => {
+    item.checked = state.checkAll
+    return item
   })
 }
 watch(
-  () => state.checkedList,
+  exportColumns,
   (val) => {
-    state.indeterminate = !!val.length && val.length < fieldOptions.length
-    state.checkAll = val.length === fieldOptions.length
+    const checkedCount = val.filter((item) => item.checked).length
+    state.indeterminate = checkedCount > 0 && checkedCount < val.length
+    state.checkAll = checkedCount === val.length
   },
+  { deep: true },
 )
 </script>
 
@@ -133,7 +140,7 @@ watch(
           type: props.rowSelectionType ?? 'checkbox',
         }"
         :data-source="data"
-        :columns="columns as TableColumnType[]"
+        :columns="columns as any"
         v-model:pagination="pagination"
         :scroll="{ x: props.scrollX ?? 2400, y: props.scrollY }"
       >
@@ -198,14 +205,13 @@ watch(
       <VueDraggable class="checkbox__wrapper" v-model="exportColumns" :animation="200">
         <a-checkbox
           v-for="(c, i) in exportColumns"
-          :key="c.dataIndex as string"
+          :key="c.dataIndex"
           class="checkbox"
-          :checked="state.checkedList[i]"
-          @change="(event) => (state.checkedList[i] = event.target.value)"
+          :checked="exportColumns[i].checked"
+          @change="(event) => (exportColumns[i].checked = event.target.checked)"
         >
           {{ c.title }}
         </a-checkbox>
-        <!--        <a-checkbox-group class="export-checkbox" v-model:value="state.checkedList" :options="fieldOptions" />-->
       </VueDraggable>
     </a-modal>
   </a-card>

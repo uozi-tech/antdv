@@ -1,15 +1,16 @@
 import { utils, writeFile } from 'xlsx'
-import { FTableColumn } from '../types'
-import { get, set } from 'lodash-es'
+import type { ExportColumn } from '../types'
+import { get } from 'lodash-es'
+import { Ref } from 'vue'
 
-export function useExport(columns: FTableColumn[], api?: (params: Record<string, any>) => Promise<any>) {
+export function useExport(columns: Ref<ExportColumn[]>, api?: (params: Record<string, any>) => Promise<any>) {
   const exportExcel = (selectedRowKey, selectedRows) => {
     if (api) {
       api({ id: selectedRowKey })?.then((res) => {
-        excel(columns, res.data)
+        excel(columns.value, res.data)
       })
     } else {
-      excel(columns, selectedRows)
+      excel(columns.value, selectedRows)
     }
   }
 
@@ -18,19 +19,28 @@ export function useExport(columns: FTableColumn[], api?: (params: Record<string,
   }
 }
 
-function excel(columns: FTableColumn[], data: Record<string, any>[]) {
-  columns.forEach((column) => {
-    data.forEach((item) => {
-      if (column.customRender) {
-        const text = get(item, column.dataIndex)
-        set(item, column.dataIndex, column.customRender({ text, record: item, column, export: true }))
-      }
-    })
-  })
-
-  const worksheet = utils.json_to_sheet(data)
+function excel(columns: ExportColumn[], data: Record<string, any>[]) {
+  const orderedData = reorderData(data, columns)
+  const worksheet = utils.json_to_sheet(orderedData)
   const workbook = utils.book_new()
 
   utils.book_append_sheet(workbook, worksheet, 'Dates')
   writeFile(workbook, `test.xlsx`)
+}
+
+function reorderData(data: Record<string, any>[], columns: ExportColumn[]): Record<string, any>[] {
+  return data.map((row) => {
+    const reorderedRow = {}
+    columns.forEach((col) => {
+      if (!col.checked) {
+        return
+      }
+      let cell = get(row, col.dataIndex)
+      if (col.customRender) {
+        cell = col.customRender({ text: cell, record: row, column: col, export: true })
+      }
+      reorderedRow[col.title] = cell
+    })
+    return reorderedRow
+  })
 }

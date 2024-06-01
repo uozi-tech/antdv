@@ -21,6 +21,7 @@ import { cascaderProps } from 'ant-design-vue/es/cascader'
 import { MonthPickerProps, WeekPickerProps } from 'ant-design-vue/es/date-picker'
 
 export interface FTableColumn extends TableColumnType<any> {
+  title?: string | (() => string)
   dataIndex: string | string[]
   customHeaderRender?: (data: { column: FTableColumn; title: string }) => VNode | JSX.Element
   search?: boolean
@@ -72,7 +73,15 @@ export interface FTableColumn extends TableColumnType<any> {
   hiddenInAdd?: boolean
   hiddenInDetail?: boolean
   hiddenInExport?: boolean
+  [key: string]: any
 }
+
+export interface ComputedColumn extends FTableColumn {
+  title?: string
+  dataIndex?: string
+}
+
+export type ExportColumn = Required<ComputedColumn> & { checked: boolean }
 
 export interface SelectOption {
   label: string
