@@ -5,6 +5,7 @@ import { expect, describe, it, expectTypeOf, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { FTableColumn } from '../types'
 import { getListResult } from './mock/getList'
+import { nextTick } from 'vue'
 
 describe('Test FCurd Render', () => {
   const wrapper = mount(FCurd, { props: { api: curd, columns: columns, scrollX: 2400 } })
@@ -23,7 +24,16 @@ describe('Test FCurd Render', () => {
     wrapper.findAll('ant-form-item-label > label').forEach((label, index) => {
       expect(label.text()).toBe(labels[index])
     })
-    expect(wrapper.find('form > button').text()).toBe('Reset')
+    expect(wrapper.find('form button').text()).toBe('Reset')
+  })
+
+  it('should reset serch form value', async () => {
+    await wrapper.find('form input').setValue('test')
+    await nextTick()
+    expect((wrapper.find('form input').element as any)?.value).toBe('test')
+    await wrapper.find('form button').trigger('click')
+    await nextTick()
+    expect((wrapper.find('form input').element as any)?.value).toBe('')
   })
 
   it('should render table properly', () => {
