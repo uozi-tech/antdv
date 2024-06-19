@@ -19,13 +19,14 @@ jobs:
       id: info
       run: |
         if [ "${{ github.event.workflow_run.event }}" == "push" ]; then
-          echo -e "EVENT_TYPE=push" >> $GITHUB_ENV
-          echo -e "Author=\"${{ github.event.workflow_run.actor.login }}\"" >> $GITHUB_ENV
+          echo "EVENT_TYPE=push" >> $GITHUB_ENV
+          echo "Author=${{ github.event.workflow_run.actor.login }}" >> $GITHUB_ENV
+          echo "MESSAGE=${{ github.event.workflow_run.head_commit.message }}" >> $GITHUB_ENV
         elif [ "${{ github.event.workflow_run.event }}" == "pull_request" ]; then
-          echo -e "EVENT_TYPE=pull_request" >> $GITHUB_ENV
-          echo -e "Author=\"${{ github.event.workflow_run.event.pull_request.user.login }}\"" >> $GITHUB_ENV
+          echo "EVENT_TYPE=pull_request" >> $GITHUB_ENV
+          echo "Author=${{ github.event.workflow_run.event.pull_request.user.login }}" >> $GITHUB_ENV
+          echo "MESSAGE=${{ github.event.workflow_run.event.pull_request.title }}" >> $GITHUB_ENV
         fi
-        echo -e "MESSAGE=\"${{ github.event.workflow_run.event.pull_request.title }}\"" >> $GITHUB_ENV
 
     - name: Notify
       env:
