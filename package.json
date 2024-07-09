@@ -15,13 +15,16 @@
     }
   },
   "repository": {
-    "url": "https://github.com/fcurd/antdv.git"
+    "url": "https://github.com/uozi/antdv.git"
   },
   "scripts": {
     "dev": "pnpm -C example dev",
     "build": "vite build",
     "test": "vitest",
     "coverage": "vitest run --coverage",
+    "e2e": "pnpm exec playwright test",
+    "e2e:ui": "pnpm exec playwright test --ui",
+    "e2e:codegen": "pnpm exec playwright codegen",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
     "typecheck": "vue-tsc --noEmit",
     "cz": "cz",
@@ -42,9 +45,11 @@
   "devDependencies": {
     "@commitlint/cli": "^19.2.1",
     "@commitlint/config-conventional": "^19.1.0",
+    "@playwright/test": "^1.45.1",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
     "@types/lodash-es": "^4.17.12",
+    "@types/node": "^20.14.10",
     "@typescript-eslint/eslint-plugin": "^7.4.0",
     "@typescript-eslint/parser": "^7.4.0",
     "@vitejs/plugin-vue": "^5.0.4",
