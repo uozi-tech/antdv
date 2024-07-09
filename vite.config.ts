@@ -49,6 +49,7 @@ export default defineConfig({
     clearMocks: true,
     environment: 'happy-dom',
     setupFiles: [resolve(__dirname, 'core/__tests__/setup.ts')],
+    include: ['core/**/*.test.ts'],
     reporters: ['default'],
     coverage: {
       include: ['core'],
